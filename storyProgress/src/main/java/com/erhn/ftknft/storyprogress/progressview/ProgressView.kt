@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.annotation.ColorInt
@@ -75,8 +76,11 @@ class ProgressView : View, ProgressViewColors, ProgressViewPlayer {
 
         mainAnimator.doOnStart { progressListener?.onStartProgress() }
         mainAnimator.doOnEnd {
-            if (state != State.CANCEL)
+            if (state != State.NONE) {
+                state = State.END
                 progressListener?.onEndProgress()
+            }
+
         }
         mainAnimator.doOnResume { progressListener?.onResumeProgress() }
         mainAnimator.doOnPause { progressListener?.onPauseProgress() }
@@ -110,12 +114,17 @@ class ProgressView : View, ProgressViewColors, ProgressViewPlayer {
     }
 
     override fun pause() {
-        state = State.PAUSE
+        if (state == State.RUNNING) {
+            state = State.PAUSE
+        }
+
         mainAnimator.pause()
     }
 
     override fun resume() {
-        state = State.RUNNING
+        if (state == State.PAUSE) {
+            state = State.RUNNING
+        }
         mainAnimator.resume()
     }
 
@@ -126,7 +135,12 @@ class ProgressView : View, ProgressViewColors, ProgressViewPlayer {
     }
 
     override fun cancel() {
-        state = State.CANCEL
+        if (state == State.END) {
+            currentAnimatorValue = 0f
+            onAnimatorUpdate()
+            progressListener?.onCancelProgress()
+        }
+        state = State.NONE
         mainAnimator.cancel()
     }
 
@@ -191,7 +205,7 @@ class ProgressView : View, ProgressViewColors, ProgressViewPlayer {
     }
 
     enum class State {
-        RUNNING, END, CANCEL, PAUSE, NONE
+        RUNNING, END, NONE, PAUSE
     }
 
 }
