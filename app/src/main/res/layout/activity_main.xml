@@ -10,6 +10,14 @@
         android:id="@+id/pb"
         android:layout_width="match_parent"
         android:layout_height="20dp" />
+
+    <com.erhn.ftknft.storyprogress.storyview.StoryView
+        android:layout_width="match_parent"
+        android:layout_marginTop="100dp"
+        app:progressCount="2"
+        app:frontColor="@color/colorPrimary"
+        app:backColor="@color/colorAccent"
+        android:layout_height="100dp"/>
     <LinearLayout
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
