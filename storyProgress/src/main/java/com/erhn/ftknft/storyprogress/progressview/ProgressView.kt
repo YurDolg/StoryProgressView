@@ -10,10 +10,7 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
-import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnPause
-import androidx.core.animation.doOnResume
-import androidx.core.animation.doOnStart
+import androidx.core.animation.*
 import com.erhn.ftknft.storyprogress.utils.RoundRectF
 import java.util.concurrent.TimeUnit
 
@@ -42,6 +39,8 @@ class ProgressView : View, ProgressViewColors, ProgressViewPlayer {
     private val paint: Paint = Paint()
 
     private var progressListener: ProgressViewListener? = null
+
+    private var state = State.NONE
 
 
     constructor(context: Context?) : super(context) {
@@ -75,9 +74,17 @@ class ProgressView : View, ProgressViewColors, ProgressViewPlayer {
         }
 
         mainAnimator.doOnStart { progressListener?.onStartProgress() }
-        mainAnimator.doOnEnd { progressListener?.onEndProgress() }
+        mainAnimator.doOnEnd {
+            if (state != State.CANCEL)
+                progressListener?.onEndProgress()
+        }
         mainAnimator.doOnResume { progressListener?.onResumeProgress() }
         mainAnimator.doOnPause { progressListener?.onPauseProgress() }
+        mainAnimator.doOnCancel {
+            progressListener?.onCancelProgress()
+            currentAnimatorValue = 0f
+            onAnimatorUpdate()
+        }
     }
 
     override fun onDetachedFromWindow() {
@@ -98,19 +105,29 @@ class ProgressView : View, ProgressViewColors, ProgressViewPlayer {
     }
 
     override fun start() {
+        state = State.RUNNING
         mainAnimator.start()
     }
 
     override fun pause() {
+        state = State.PAUSE
         mainAnimator.pause()
     }
 
     override fun resume() {
+        state = State.RUNNING
         mainAnimator.resume()
     }
 
     override fun end() {
+        if (state != State.RUNNING) return
+        state = State.END
         mainAnimator.end()
+    }
+
+    override fun cancel() {
+        state = State.CANCEL
+        mainAnimator.cancel()
     }
 
     override fun setListener(listener: ProgressViewListener) {
@@ -169,6 +186,12 @@ class ProgressView : View, ProgressViewColors, ProgressViewPlayer {
 
         fun onResumeProgress()
 
+        fun onCancelProgress()
+
+    }
+
+    enum class State {
+        RUNNING, END, CANCEL, PAUSE, NONE
     }
 
 }

@@ -38,6 +38,12 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_cancel"
+            android:text="cancel"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
 </FrameLayout>

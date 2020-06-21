@@ -12,7 +12,8 @@ interface ProgressViewPlayer {
 
     fun end()
 
-    fun setDuration(duration: Long, timeUnit: TimeUnit = TimeUnit.MILLISECONDS)
+    fun cancel()
 
+    fun setDuration(duration: Long, timeUnit: TimeUnit = TimeUnit.MILLISECONDS)
     fun setListener(listener: ProgressView.ProgressViewListener)
 }

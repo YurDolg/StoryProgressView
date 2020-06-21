@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity(), ProgressView.ProgressViewListener, Vie
         btn_end.setOnClickListener(this)
         btn_pause.setOnClickListener(this)
         btn_resume.setOnClickListener(this)
+        btn_cancel.setOnClickListener(this)
     }
 
 
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity(), ProgressView.ProgressViewListener, Vie
             btn_pause.id -> pb.pause()
             btn_end.id -> pb.end()
             btn_resume.id -> pb.resume()
+            btn_cancel.id  -> pb.cancel()
 
         }
     }
@@ -43,5 +45,9 @@ class MainActivity : AppCompatActivity(), ProgressView.ProgressViewListener, Vie
 
     override fun onResumeProgress() {
         Log.d("PROGRESS_VIEW", "onResumeProgress")
+    }
+
+    override fun onCancelProgress() {
+        Log.d("PROGRESS_VIEW", "onCancelProgress")
     }
 }
